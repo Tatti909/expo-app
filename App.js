@@ -1,70 +1,58 @@
-import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { TextInput, Button } from 'react-native';
+import { TextInput, Button, Alert } from 'react-native';
 
 export default function App() {
-  const [num1, setNum1] = useState('');
-  const [num2, setNum2] = useState('');
-  const [result, setResult] = useState(null);
+  const [randomNumber] = useState(
+    Math.floor(Math.random() * 100) + 1
+  );
+  const [guess, setGuess] = useState('');
+  const [message, setMessage] = useState('Arvaa numero väliltä 1-100');
+  const [count, setCount] = useState(0);
 
-  const sum = () => {
-    setResult(Number(num1) + Number(num2));
-  };
+  const makeGuess = () => {
+    const userGuess = Number(guess);
+    const newCount = count + 1;
+    setCount(newCount);
 
-  const subtract = () => {
-    setResult(Number(num1) - Number(num2));
-  };
+    if(userGuess < randomNumber) {
+      setMessage('Liian pieni! Yritä uudelleen.');
+    } else if (userGuess > randomNumber) {
+      setMessage('Liian suuri! Yritä uudelleen.');
+    } else {
+      setMessage(`Onneksi olkoon! Arvasit oikein ${newCount} yrityksellä.`);
+    }
+
+    setGuess('');
+};
 
   return (
     <View style={styles.container}>
-      <Text style={styles.resultText}>
-        Result: {result !== null ? result : ''}
-      </Text>
+      <Text>{message}</Text>
 
       <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={num1}
-        onChangeText={setNum1}
-        placeholder="First number"
+      style={styles.input}
+      keyboardType="numeric"
+      value={guess}
+      onChangeText={setGuess}
       />
 
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={num2}
-        onChangeText={setNum2}
-        placeholder="Second number"
-      />
-
-      <View style={styles.buttonContainer}>
-        <Button title="+" onPress={sum} />
-        <Button title="-" onPress={subtract} />
+      <Button title="Arvaa" onPress={makeGuess} />
       </View>
-
-      <StatusBar style="auto" />
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F6A7F6',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   input: {
     borderWidth: 1,
+    marginVertical: 10,
     width: 150,
-    marginbottom: 10,
-    padding: 5,
+    padding : 5,
   },
-  resultText:{
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-  }
 });
